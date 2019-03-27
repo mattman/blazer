@@ -77,7 +77,7 @@
       <div id="map" style="height: <%= @only_chart ? 300 : 500 %>px;"></div>
       <script>
         L.mapbox.accessToken = '<%= ENV["MAPBOX_ACCESS_TOKEN"] %>';
-        var map = L.mapbox.map('map', 'mapbox.streets');
+        var map = L.mapbox.map('map').addLayer(L.mapbox.styleLayer("mapbox://styles/mattdidcoe/cjopdy4jw7faq2smj7lfz4e4u"));
         <%= blazer_js_var "markers", @markers %>
         var featureLayer = L.mapbox.featureLayer().addTo(map);
         var geojson = [];
@@ -94,8 +94,8 @@
             },
             properties: {
               description: marker.title,
-              'marker-color': '#f86767',
-              'marker-size': 'medium'
+              'marker-size': 'small',
+              'marker-symbol': 'lodgings-11'
             }
           });
         }
