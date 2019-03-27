@@ -76,10 +76,14 @@
     <% if blazer_maps? && @markers.any? %>
       <div id="map" style="height: <%= @only_chart ? 300 : 500 %>px;"></div>
       <script>
-        L.mapbox.accessToken = '<%= ENV["MAPBOX_ACCESS_TOKEN"] %>';
-        var map = L.mapbox.map('map', 'mapbox.streets');
+        mapboxgl.accessToken = '<%= ENV["MAPBOX_ACCESS_TOKEN"] %>';
+        const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mattdidcoe/cjopdy4jw7faq2smj7lfz4e4u',
+          center: [143.669791, -28.027575],
+          zoom: 3.1
+         });
         <%= blazer_js_var "markers", @markers %>
-        var featureLayer = L.mapbox.featureLayer().addTo(map);
         var geojson = [];
         for (var i = 0; i < markers.length; i++) {
           var marker = markers[i];
@@ -93,13 +97,19 @@
               ]
             },
             properties: {
-              description: marker.title,
-              'marker-color': '#f86767',
-              'marker-size': 'medium'
+              description: marker.title
             }
           });
         }
-        featureLayer.setGeoJSON(geojson);
+        map.addSource('points', {
+          type: 'geojson',
+          data: geojson
+        });
+        map.addLayer({
+          id: 'points',
+          source: 'points',
+          type: 'symbol'
+        });
         map.fitBounds(featureLayer.getBounds());
       </script>
     <% elsif chart_type == "line" %>
